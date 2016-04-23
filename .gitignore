@@ -1,0 +1,5 @@
+/.idea
+/app/config/production
+/app/config/testing
+/storage
+/vendor
