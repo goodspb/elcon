@@ -279,5 +279,7 @@ function profilerStop()
 
 function storagePath($path = null)
 {
-    return ROOT_PATH . '/storage' . ($path ? '/' . $path : '');
+    $dir = ROOT_PATH . '/storage' . ($path ? '/' . $path : '');
+    is_dir($dir) OR mkdir($dir, 0777, true);
+    return $dir;
 }

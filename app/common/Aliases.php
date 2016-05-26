@@ -8,7 +8,7 @@ class Aliases
 
     public static function register(Di $di)
     {
-        foreach (Config::get('app.class_aliases') as $alias => $class) {
+        foreach (Config::get('aliases') as $alias => $class) {
             class_alias($class, $alias);
         }
     }

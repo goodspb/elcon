@@ -8,7 +8,7 @@ use Phalcon\Di\FactoryDefault\Cli as CliDI,
 
 $di = new CliDI();
 
-defined('ROOT_PATH') || define('ROOT_PATH', dirname(__DIR__));
+defined('ROOT_PATH') || define('ROOT_PATH', __DIR__);
 
 include ROOT_PATH .'/commands/loader.php';
 
