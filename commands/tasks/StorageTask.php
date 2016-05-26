@@ -5,7 +5,7 @@ use Commands\BaseTask;
 
 class StorageTask extends BaseTask
 {
-    protected $types = array('cache', 'profiler');
+    protected $types = array('cache', 'profiler', 'templates');
 
     public function mainAction()
     {
@@ -15,21 +15,30 @@ class StorageTask extends BaseTask
     public function helpAction()
     {
         $types = implode(' | ', $this->types);
-        echo " Clear storage files.\n php tool storage clear [ {$types} ]\n\n";
+        echo "Usage: \n php tool storage clear [ {$types} ]\n\n";
     }
 
     public function clearAction(array $params = null)
     {
-        $type = isset($params[0]) ? $params[0] : 'cache';
-        if (!in_array($type, $this->types)) {
+        $input = isset($params[0]) ? $params[0] : 'all';
+        if ($input != 'all' && !in_array($input, $this->types)) {
             $this->helpAction();
             return;
         }
+        foreach ($this->types as $counter => $type) {
+            if ($input == 'all' || $type == $input) {
+                $this->clearCache($type);
+            }
+            if ($counter == (count($this->types)-1)) echo "\n";
+        }
+    }
+
+    protected function clearCache($type)
+    {
         $path = ROOT_PATH . "/storage/{$type}/";
         if (is_writeable($path)) {
             $skipFiles = array('.', '..', '.gitkeep');
             if (is_dir($path) && ($dir = opendir($path))) {
-                echo "\n";
                 while (($resource = readdir($dir)) !== false) {
                     $filePath = $path . $resource;
                     if (!in_array($resource, $skipFiles) && is_file($filePath)) {
@@ -41,9 +50,9 @@ class StorageTask extends BaseTask
                 }
                 closedir($dir);
             }
-            echo "\n Clear storage {$type} success! \n\n";
+            echo "\n Clear storage {$type} success! \n";
         } else {
-            echo "\n Clear storage failed, please use 'sudo php tool storage clear' \n\n";
+            echo "\n Clear storage failed, please use 'sudo php tool storage clear' \n";
         }
     }
 
