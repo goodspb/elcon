@@ -1,6 +1,7 @@
 <?php
 class Config extends Common\Config{}
 class Log extends Common\Log{}
+class Db extends Common\Db{}
 class Cookie extends Common\Cookie{}
 class Cache extends Common\Cache{}
 class Session extends Common\Session{}

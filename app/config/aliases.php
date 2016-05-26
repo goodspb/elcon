@@ -3,6 +3,7 @@
 return [
     'Config' => 'Common\Config',
     'Log' => 'Common\Log',
+    'Db' => 'Common\Db',
     'Cookie' => 'Common\Cookie',
     'Cache' => 'Common\Cache',
     'Session' => 'Common\Session',

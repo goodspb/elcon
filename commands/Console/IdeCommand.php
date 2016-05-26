@@ -1,27 +1,35 @@
 <?php
-namespace Commands\Tasks;
+namespace Commands\Console;
 
-use Commands\BaseTask;
-use \Config;
+use Commands\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
-class IdeTask extends BaseTask
+class IdeCommand extends Command
 {
     private $ideHelperFile = '_ide_helper.php';
     private $ideHelperPath = ROOT_PATH .'/';
 
-    public function mainAction()
+    protected function configure()
+    {
+        $this->setName('ide:create')
+             ->setDescription('Create '.$this->ideHelperFile)
+        ;
+    }
+
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
         $ideHelper = $this->ideHelperPath.$this->ideHelperFile;
         $content = "<?php\n";
         $content .= $this->getCommonAlias();
         file_put_contents($ideHelper, $content);
-        echo "Create ide helper success.\n";
+        $output->writeln($this->info("Create ide helper success."));
     }
 
     private function getCommonAlias()
     {
         $content = '';
-        $aliases = Config::get('aliases');
+        $aliases = $this->config('aliases');
         if ($aliases) foreach ($aliases as $alias => $class) {
             $content .= "class {$alias} extends $class{}\n";
         }

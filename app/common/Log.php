@@ -15,17 +15,17 @@ class Log extends Logger
     protected static $logger;
     protected static $hostname;
 
-    public static function debug($message = null, array $context = [])
+    public static function debug($message = null, array $context = null)
     {
         static::log(static::DEBUG, $message, $context);
     }
 
-    public static function error($message = null, array $context = [])
+    public static function error($message = null, array $context = null)
     {
         static::log(static::ERROR, $message, $context);
     }
 
-    public static function log($type, $message = null, array $context = [])
+    public static function log($type, $message = null, array $context = null)
     {
         static::$logger or static::$logger = Di::getDefault()->getShared('log');
         $context['host'] = static::$hostname;

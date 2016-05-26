@@ -9,6 +9,6 @@ return [
     'url' => 'http://localhost',
     'log' => [
         'adapter' => 'file',
-        'file' => 'phalcon.log',
+        'file' => 'elcon.log',
     ],
 ];
