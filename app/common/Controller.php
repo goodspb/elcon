@@ -47,6 +47,15 @@ abstract class Controller extends PhalconContrller
     }
 
     /**
+     * @param $content
+     * @return \Phalcon\Http\Response|\Phalcon\Http\ResponseInterface
+     */
+    protected function content($content)
+    {
+        return $this->response->appendContent($content);
+    }
+    
+    /**
      * stop application and return content to client
      * @param int $httpCode
      * @return \Phalcon\Http\ResponseInterface
