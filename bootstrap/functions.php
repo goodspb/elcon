@@ -1,17 +1,6 @@
 <?php
 use Common\Exception\NotFoundException;
 use Common\Log;
-use Common\Lang;
-
-/**
- * return language translate
- * @param $key
- * @return mixed
- */
-function lang($key)
-{
-    return Lang::get($key);
-}
 
 /**
  * Show execution trace for debugging

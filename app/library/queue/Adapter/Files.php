@@ -1,8 +1,9 @@
 <?php
-namespace Library\Queue;
+namespace Library\Queue\Adapter;
 
+use Library\Queue\QueueAdapter;
 
-class File extends QueueAdapter
+class Files extends QueueAdapter
 {
 
     private $tube = 'main';

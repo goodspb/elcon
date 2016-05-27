@@ -10,6 +10,18 @@ abstract class Model extends PhalconModel
 {
     public $pk = 'id';
 
+    /**
+     * @return string
+     */
+    public function getPk()
+    {
+        return $this->pk;
+    }
+
+    /**]
+     * @param array $data
+     * @return $this
+     */
     public function addData(array $data)
     {
         $data = array_merge($this->toArray(), $data);
@@ -19,16 +31,28 @@ abstract class Model extends PhalconModel
         return $this;
     }
 
+    /**
+     * @param null $key
+     * @return array|null|PhalconModel\Resultset|\Phalcon\Mvc\Model
+     */
     public function getData($key = null)
     {
         return $key === null ? $this->toArray() : (property_exists($this, $key) ? $this->$key : null);
     }
 
+    /**
+     * @return array|null|PhalconModel\Resultset|\Phalcon\Mvc\Model
+     */
     public function getId()
     {
         return $this->getData($this->pk);
     }
 
+    /**
+     * @param $key
+     * @param null $value
+     * @return $this
+     */
     public function setData($key, $value = null)
     {
         if (is_array($key)) {
@@ -41,6 +65,10 @@ abstract class Model extends PhalconModel
         return $this;
     }
 
+    /**
+     * @param $id
+     * @return $this|Model
+     */
     public function setId($id)
     {
         return $this->setData($this->pk, $id);
@@ -126,22 +154,27 @@ abstract class Model extends PhalconModel
     /**
      * @param array | string | int $conditions
      * @param array $bind
+     * @param string $order
+     * @param string $columns
      * @return $this
      */
-    public static function findFirstSimple($conditions, $bind = array())
+    public static function findFirstSimple($conditions, $bind = array(), $order = null, $columns = null)
     {
-        $params = static::buildParams($conditions, $bind);
+        $params = static::buildParams($conditions, $bind, $order, $columns);
         return static::findFirst($params);
     }
 
     /**
      * @param $conditions
      * @param array $bind
+     * @param string $order
+     * @param string $columns
+     * @param string|int $limit
      * @return $this
      */
-    public static function findSimple($conditions = array(), $bind = array())
+    public static function findSimple($conditions = array(), $bind = array(), $order = null, $columns = null, $limit = null)
     {
-        $params = static::buildParams($conditions, $bind);
+        $params = static::buildParams($conditions, $bind, $order, $columns, $limit);
         return static::find($params);
     }
 
@@ -159,28 +192,32 @@ abstract class Model extends PhalconModel
     /**
      * @param $conditions
      * @param array $bind
+     * @param string $order
+     * @param string $columns
+     * @param string|int $limit
      * @return array
      */
-    public static function buildParams($conditions = array(), $bind = array())
+    public static function buildParams($conditions = array(), $bind = array(), $order = null, $columns = null, $limit = null)
     {
         $params = array();
-        if (empty($conditions)) {
-            return $params;
-        }
         if (empty($bind)) {
             if (is_array($conditions)) {
                 $params['conditions'] = "";
                 $params['bind'] = array();
                 foreach ($conditions as $key => $value) {
                     if (!is_array($value)) {
-                        $operater = '=';
+                        $operator = '=';
                         $realValue = $value;
                     } else {
-                        $operater = reset($value);
+                        $operator = reset($value);
                         $realValue = next($value);
                     }
+                    $columnsKay = $key;
+                    if (($__found = strpos($columnsKay, "__")) !== false && $__found > 0) {
+                        $columnsKay = substr($columnsKay, 0, $__found);
+                    }
                     $params['conditions'] .= ($params['conditions'] == "" ? "" :
-                            " AND ") . " {$key} {$operater} :{$key}: ";
+                            " AND ") . " {$columnsKay} {$operator} :{$key}: ";
                     $params['bind'][$key] = $realValue;
                 }
             } else {
@@ -189,6 +226,21 @@ abstract class Model extends PhalconModel
         } else {
             $params['conditions'] = $conditions;
             $params['bind'] = $bind;
+        }
+        if (!is_null($order) && is_string($order)) {
+            $params['order'] = $order;
+        }
+        if (!is_null($columns)) {
+            $params['columns'] = is_array($columns) ? explode(',', $columns) : $columns;
+        }
+        if (!is_null($limit)) {
+            if (is_int($limit)){
+                $params['limit'] = $limit;
+            } elseif(is_string($limit) && strpos($limit, ',') && count($limitOffset = explode(',', $limit)) == 2) {
+                list($limit, $offset) = $limitOffset;
+                $params['limit'] = intval(trim($limit));
+                $params['offset'] = intval(trim($offset));
+            }
         }
         return $params;
     }

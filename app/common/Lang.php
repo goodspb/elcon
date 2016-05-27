@@ -19,7 +19,7 @@ class Lang
             $request = Di::getDefault()->getShared('request');
             $language = $request->getBestLanguage();
         } else {
-            $language = fnget($languageConfig, 'locale');
+            $language = fnGet($languageConfig, 'locale');
         }
 
         if (!isset(self::$lang[$language])) {

@@ -26,13 +26,13 @@ return [
         ],
         'memcached' => [
             'adapter' => 'Libmemcached',
-            'servers' => array(
-                array('host' => 'localhost', 'port' => 11211, 'weight' => 1),
-            ),
-            'client' => array(
+            'servers' => [
+                ['host' => 'localhost', 'port' => 11211, 'weight' => 1],
+            ],
+            'client' => class_exists('Memcached') ? [
                 Memcached::OPT_HASH => Memcached::HASH_MD5,
                 Memcached::OPT_PREFIX_KEY => 'prefix.',
-            ),
+            ] : [],
             'lifetime' => 3600,
             'prefix' => 'my_'
         ]
