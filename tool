@@ -17,7 +17,7 @@ include ROOT_PATH . '/bootstrap/functions.php';
 \Common\Config::register($di);
 \Common\Aliases::register($di);
 
-$consoles = require ROOT_PATH. '/commands/consoles.php';
+$consoles = require ROOT_PATH. '/bootstrap/consoles.php';
 
 $application = new Application();
 //$application->setDi($di);

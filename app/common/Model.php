@@ -216,9 +216,18 @@ abstract class Model extends PhalconModel
                     if (($__found = strpos($columnsKay, "__")) !== false && $__found > 0) {
                         $columnsKay = substr($columnsKay, 0, $__found);
                     }
-                    $params['conditions'] .= ($params['conditions'] == "" ? "" :
-                            " AND ") . " {$columnsKay} {$operator} :{$key}: ";
-                    $params['bind'][$key] = $realValue;
+                    /* 如果是 IN */
+                    if (trim(strtolower($operator)) == 'in' && is_array($realValue) && !empty($realValue)) {
+                        $inCondition = "";
+                        foreach ($realValue as $realValueK => $realValueV) {
+                            $inCondition .= ($inCondition == '' ? '' : " , ") . " :{$columnsKay}_{$realValueK}: ";
+                            $params['bind']["{$columnsKay}_{$realValueK}"] = trim($realValueV);
+                        }
+                        $params['conditions'] .= ($params['conditions'] == "" ? "" : " AND ") . " {$columnsKay} IN ( {$inCondition} ) ";
+                    } else {
+                        $params['conditions'] .= ($params['conditions'] == "" ? "" : " AND ") . " {$columnsKay} {$operator} :{$key}: ";
+                        $params['bind'][$key] = $realValue;
+                    }
                 }
             } else {
                 $params['conditions'] = $conditions;
