@@ -1,10 +1,10 @@
 <?php
 namespace Common;
 
-use Exception;
+use Phalcon\Di;
 use Phalcon\Db as PhalconDb;
 use Phalcon\Mvc\Model as PhalconModel;
-use Phalcon\Mvc\ModelInterface;
+use Phalcon\Paginator\Adapter\QueryBuilder as Paginator;
 
 abstract class Model extends PhalconModel
 {
@@ -254,4 +254,24 @@ abstract class Model extends PhalconModel
         return $params;
     }
 
+    /**
+     * Get pagination
+     * @param $conditions
+     * @param $order
+     * @param $pageSize
+     * @param $currentPage
+     * @return Paginator
+     */
+    public static function pagination($conditions, $order, $pageSize, $currentPage)
+    {
+        $queryParams = self::buildParams($conditions, [], $order);
+        $modelsManager = Di::getDefault()->getShared("modelsManager");
+        $builder = $modelsManager->createBuilder($queryParams);
+        $builder->from(static::class);
+        return new Paginator([
+            'builder' => $builder,
+            'limit' => $pageSize,
+            'page' => $currentPage,
+        ]);
+    }
 }
