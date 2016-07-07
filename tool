@@ -11,10 +11,10 @@ use Phalcon\Di\FactoryDefault\Cli as CliDI;
 $di = new CliDI();
 include ROOT_PATH . '/bootstrap/functions.php';
 
+\Common\Config::register($di);
 \Common\Db::register($di);
 \Common\Cache::register($di);
 \Common\Log::register($di);
-\Common\Config::register($di);
 \Common\Aliases::register($di);
 
 $consoles = require ROOT_PATH. '/bootstrap/consoles.php';
